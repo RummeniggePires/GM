@@ -3,1192 +3,466 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CGM Dashboard · Energisa</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Escolha o Tema · CGM Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Geist:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0c0f;
-    --surface: #111318;
-    --surface2: #181c23;
-    --border: #1e2530;
-    --accent: #f5a623;
-    --accent2: #00d4aa;
-    --red: #ff4757;
-    --green: #2ed573;
-    --text: #e8eaf0;
-    --text2: #8892a4;
-    --text3: #4a5568;
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Syne', sans-serif;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--mono);
-    min-height: 100vh;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(245,166,35,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(245,166,35,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .wrapper { position: relative; z-index: 1; }
-
-  /* ── SCREENS ── */
-  .screen { display: none; }
-  .screen.active { display: block; }
-
-  /* ══════════════════════════════
-     UPLOAD SCREEN
-  ══════════════════════════════ */
-  .upload-screen {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-  }
-
-  .upload-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 48px;
-    width: 100%;
-    max-width: 520px;
-  }
-
-  .upload-logo {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 36px;
-  }
-
-  .logo-badge {
-    width: 44px; height: 44px;
-    background: var(--accent);
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--sans);
-    font-weight: 800;
-    font-size: 18px;
-    color: #000;
-  }
-
-  .logo-text h1 {
-    font-family: var(--sans);
-    font-size: 18px;
-    font-weight: 700;
-  }
-
-  .logo-text p {
-    font-size: 11px;
-    color: var(--text2);
-    margin-top: 2px;
-  }
-
-  .field-label {
-    font-size: 11px;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-  }
-
-  .field-group { margin-bottom: 20px; }
-
-  .api-input-wrap {
-    position: relative;
-  }
-
-  .api-input-wrap input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 13px;
-    padding: 12px 44px 12px 14px;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  .api-input-wrap input:focus { border-color: var(--accent); }
-  .api-input-wrap input::placeholder { color: var(--text3); }
-
-  .toggle-vis {
-    position: absolute;
-    right: 12px; top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--text3);
-    cursor: pointer;
-    font-size: 16px;
-    padding: 2px;
-    transition: color 0.15s;
-  }
-
-  .toggle-vis:hover { color: var(--text2); }
-
-  /* DROP ZONE */
-  .drop-zone {
-    border: 2px dashed var(--border);
-    border-radius: 10px;
-    padding: 36px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    position: relative;
-  }
-
-  .drop-zone:hover, .drop-zone.dragover {
-    border-color: var(--accent);
-    background: rgba(245,166,35,0.04);
-  }
-
-  .drop-zone input[type="file"] {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-  }
-
-  .drop-icon {
-    font-size: 36px;
-    margin-bottom: 12px;
-    display: block;
-  }
-
-  .drop-zone p {
-    font-size: 13px;
-    color: var(--text2);
-    line-height: 1.6;
-  }
-
-  .drop-zone .file-name {
-    margin-top: 10px;
-    font-size: 12px;
-    color: var(--accent);
-    display: none;
-  }
-
-  .btn-primary {
-    width: 100%;
-    background: var(--accent);
-    color: #000;
-    border: none;
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 14px;
-    padding: 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-    margin-top: 24px;
-    letter-spacing: 0.3px;
-  }
-
-  .btn-primary:hover { opacity: 0.9; }
-  .btn-primary:active { transform: scale(0.99); }
-  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  .hint-text {
-    font-size: 11px;
-    color: var(--text3);
-    text-align: center;
-    margin-top: 16px;
-    line-height: 1.6;
-  }
-
-  .hint-text a { color: var(--text2); text-decoration: underline; }
-
-  /* ══════════════════════════════
-     LOADING SCREEN
-  ══════════════════════════════ */
-  .loading-screen {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-    padding: 40px;
-  }
-
-  .spinner {
-    width: 48px; height: 48px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .loading-title {
-    font-family: var(--sans);
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .loading-sub {
-    font-size: 12px;
-    color: var(--text3);
-    text-align: center;
-    max-width: 340px;
-    line-height: 1.7;
-  }
-
-  .loading-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    max-width: 340px;
-  }
-
-  .step {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    color: var(--text3);
-    transition: color 0.3s;
-  }
-
-  .step.active { color: var(--accent); }
-  .step.done { color: var(--green); }
-
-  .step-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--border);
-    flex-shrink: 0;
-    transition: background 0.3s;
-  }
-
-  .step.active .step-dot { background: var(--accent); }
-  .step.done .step-dot { background: var(--green); }
-
-  /* ══════════════════════════════
-     ERROR SCREEN
-  ══════════════════════════════ */
-  .error-screen {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    padding: 40px;
-  }
-
-  .error-icon { font-size: 48px; }
-
-  .error-title {
-    font-family: var(--sans);
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--red);
-  }
-
-  .error-msg {
-    font-size: 12px;
-    color: var(--text2);
-    text-align: center;
-    max-width: 400px;
-    line-height: 1.7;
-    background: rgba(255,71,87,0.07);
-    border: 1px solid rgba(255,71,87,0.2);
-    border-radius: 8px;
-    padding: 16px 20px;
-  }
-
-  .btn-secondary {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text2);
-    font-family: var(--mono);
-    font-size: 12px;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
-    margin-top: 8px;
-  }
-
-  .btn-secondary:hover { border-color: var(--text2); color: var(--text); }
-
-  /* ══════════════════════════════
-     DASHBOARD SCREEN
-  ══════════════════════════════ */
-  header {
-    padding: 24px 40px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .header-left { display: flex; align-items: center; gap: 14px; }
-
-  .header-meta { text-align: right; }
-
-  .date-tag {
-    display: inline-block;
-    background: rgba(245,166,35,0.12);
-    border: 1px solid rgba(245,166,35,0.3);
-    color: var(--accent);
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 4px;
-    margin-bottom: 4px;
-  }
-
-  .header-meta p { font-size: 11px; color: var(--text3); }
-
-  .btn-reset {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text3);
-    font-family: var(--mono);
-    font-size: 11px;
-    padding: 7px 14px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .btn-reset:hover { border-color: var(--red); color: var(--red); }
-
-  /* STATS */
-  .stats-bar {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 1px;
-    border-bottom: 1px solid var(--border);
-    background: var(--border);
-  }
-
-  .stat-cell {
-    background: var(--surface);
-    padding: 18px 24px;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .stat-cell:hover, .stat-cell.active { background: var(--surface2); }
-
-  .stat-cell .s-label {
-    font-size: 10px;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 7px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .s-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-  }
-
-  .stat-cell .s-value {
-    font-family: var(--sans);
-    font-size: 26px;
-    font-weight: 800;
-    line-height: 1;
-  }
-
-  .c-all { color: var(--text); }
-  .c-aprovada { color: var(--green); }
-  .c-cancelada { color: var(--red); }
-  .dot-all { background: var(--accent); }
-  .dot-aprovada { background: var(--green); }
-  .dot-cancelada { background: var(--red); }
-
-  /* CONTROLS */
-  .controls {
-    padding: 16px 40px;
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .search-wrap {
-    position: relative;
-    flex: 1;
-    min-width: 200px;
-  }
-
-  .search-wrap input {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 12px;
-    padding: 9px 14px 9px 36px;
-    border-radius: 6px;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  .search-wrap input:focus { border-color: var(--accent); }
-  .search-wrap input::placeholder { color: var(--text3); }
-  .s-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 14px; }
-
-  select {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 11px;
-    padding: 9px 28px 9px 12px;
-    border-radius: 6px;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238892a4' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 9px center;
-  }
-
-  select:focus { border-color: var(--accent); }
-
-  .result-count { font-size: 11px; color: var(--text3); white-space: nowrap; }
-
-  /* TABLE */
-  .table-wrap { overflow-x: auto; padding: 0 40px 40px; }
-
-  table { width: 100%; border-collapse: collapse; margin-top: 18px; }
-
-  thead th {
-    text-align: left;
-    font-size: 10px;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 9px 12px;
-    font-weight: 500;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
-
-  tbody tr {
-    border-bottom: 1px solid rgba(30,37,48,0.6);
-    transition: background 0.1s;
-    cursor: pointer;
-  }
-
-  tbody tr:hover { background: var(--surface2); }
-
-  tbody td {
-    padding: 11px 12px;
-    font-size: 12px;
-    color: var(--text2);
-    vertical-align: middle;
-  }
-
-  .gm-num {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--text);
-  }
-
-  .cat-badge {
-    display: inline-block;
-    font-size: 10px;
-    padding: 2px 7px;
-    border-radius: 3px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border);
-    color: var(--text3);
-    white-space: nowrap;
-  }
-
-  .assunto-cell {
-    max-width: 260px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: var(--text);
-  }
-
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 3px;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-
-  .badge-aprovada { background: rgba(46,213,115,0.1); color: var(--green); border: 1px solid rgba(46,213,115,0.25); }
-  .badge-cancelada { background: rgba(255,71,87,0.1); color: var(--red); border: 1px solid rgba(255,71,87,0.25); }
-
-  .dur-text { color: var(--accent2); font-size: 11px; white-space: nowrap; }
-  .time-text { white-space: nowrap; font-size: 11px; }
-
-  /* EMPTY */
-  .empty { text-align: center; padding: 60px 20px; color: var(--text3); font-size: 13px; }
-  .empty .icon { font-size: 36px; margin-bottom: 12px; }
-
-  /* MODAL */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.75);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    max-width: 580px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 28px;
-    position: relative;
-    animation: slideUp 0.18s ease;
-  }
-
-  @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-  .modal-close {
-    position: absolute; top: 14px; right: 14px;
-    background: none; border: none; color: var(--text3);
-    font-size: 18px; cursor: pointer; padding: 4px 8px; border-radius: 4px;
-  }
-
-  .modal-close:hover { color: var(--text); }
-
-  .modal-gm-label { font-size: 10px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
-  .modal-title { font-family: var(--sans); font-size: 16px; font-weight: 700; line-height: 1.4; margin-bottom: 20px; padding-right: 24px; }
-
-  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  .mfield {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 11px 13px;
-  }
-
-  .mfield.full { grid-column: span 2; }
-  .mfield .fl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-  .mfield .fv { font-size: 12px; color: var(--text); font-weight: 500; line-height: 1.5; }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #0f0f0f;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  padding: 40px 24px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.sub {
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 48px;
+}
+
+.themes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 28px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.theme-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+
+.theme-card:hover {
+  transform: translateY(-4px);
+}
+
+.theme-card.selected {
+  border-color: #fff;
+}
+
+.theme-label {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 13px;
+  color: #888;
+}
+
+.theme-label strong {
+  display: block;
+  color: #fff;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+/* ═══════════════════════════════
+   TEMA 1 · SLATE PRO
+   Escuro refinado, fontes limpas
+═══════════════════════════════ */
+.t1 {
+  background: #0d1117;
+  padding: 20px;
+  font-family: 'Geist', 'Inter', sans-serif;
+}
+
+.t1 .header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.t1 .badge {
+  width: 36px; height: 36px;
+  background: #2f81f7;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 16px; color: #fff;
+}
+
+.t1 .htitle { font-size: 14px; font-weight: 600; color: #e6edf3; }
+.t1 .hsub { font-size: 11px; color: #7d8590; margin-top: 1px; }
+
+.t1 .stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.t1 .stat {
+  background: #161b22;
+  border: 1px solid #21262d;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.t1 .stat .sl { font-size: 10px; color: #7d8590; margin-bottom: 4px; }
+.t1 .stat .sv { font-size: 20px; font-weight: 700; }
+.t1 .stat.s-total .sv { color: #e6edf3; }
+.t1 .stat.s-aprov .sv { color: #3fb950; }
+.t1 .stat.s-cancel .sv { color: #f85149; }
+
+.t1 .search {
+  background: #161b22;
+  border: 1px solid #21262d;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #7d8590;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.t1 .rows { display: flex; flex-direction: column; gap: 1px; }
+
+.t1 .row {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #161b22;
+  border: 1px solid #21262d;
+}
+
+.t1 .row .rnum { font-size: 12px; font-weight: 600; color: #2f81f7; }
+.t1 .row .rassunto { font-size: 11px; color: #e6edf3; }
+.t1 .row .rsub { font-size: 10px; color: #7d8590; }
+
+.t1 .pill-aprov { background: rgba(63,185,80,0.15); color: #3fb950; border: 1px solid rgba(63,185,80,0.3); font-size: 9px; padding: 2px 7px; border-radius: 20px; }
+.t1 .pill-cancel { background: rgba(248,81,73,0.15); color: #f85149; border: 1px solid rgba(248,81,73,0.3); font-size: 9px; padding: 2px 7px; border-radius: 20px; }
+
+/* ═══════════════════════════════
+   TEMA 2 · CARBON
+   Cinza industrial, sem frescura
+═══════════════════════════════ */
+.t2 {
+  background: #1a1a1a;
+  padding: 20px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.t2 .header {
+  border-bottom: 1px solid #333;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.t2 .htitle { font-size: 13px; font-weight: 500; color: #f4f4f4; letter-spacing: 0.5px; }
+.t2 .hsub { font-size: 10px; color: #6f6f6f; margin-top: 3px; }
+.t2 .htag { font-size: 10px; color: #78a9ff; background: rgba(120,169,255,0.1); border: 1px solid rgba(120,169,255,0.25); padding: 3px 8px; border-radius: 2px; }
+
+.t2 .stats {
+  display: flex;
+  gap: 1px;
+  margin-bottom: 14px;
+  background: #333;
+}
+
+.t2 .stat {
+  flex: 1;
+  background: #1a1a1a;
+  padding: 10px 14px;
+}
+
+.t2 .stat .sl { font-size: 9px; color: #6f6f6f; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
+.t2 .stat .sv { font-size: 22px; font-weight: 400; }
+.t2 .stat.s-total .sv { color: #f4f4f4; }
+.t2 .stat.s-aprov .sv { color: #42be65; }
+.t2 .stat.s-cancel .sv { color: #fa4d56; }
+
+.t2 .rows { display: flex; flex-direction: column; }
+
+.t2 .row {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 4px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.t2 .row .rnum { font-size: 11px; color: #78a9ff; }
+.t2 .row .rassunto { font-size: 11px; color: #c6c6c6; }
+.t2 .row .rsub { font-size: 9px; color: #6f6f6f; margin-top: 2px; }
+
+.t2 .pill-aprov { color: #42be65; font-size: 9px; }
+.t2 .pill-aprov::before { content: '▶ '; }
+.t2 .pill-cancel { color: #fa4d56; font-size: 9px; }
+.t2 .pill-cancel::before { content: '✕ '; }
+
+/* ═══════════════════════════════
+   TEMA 3 · AURORA
+   Escuro com gradientes suaves
+═══════════════════════════════ */
+.t3 {
+  background: #0f0c1a;
+  padding: 20px;
+  font-family: 'Outfit', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.t3::before {
+  content: '';
+  position: absolute;
+  top: -60px; left: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.t3::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; right: -40px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.t3 .header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.t3 .badge {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 16px; color: #fff;
+}
+
+.t3 .htitle { font-size: 15px; font-weight: 600; color: #f8fafc; }
+.t3 .hsub { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+
+.t3 .stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+  position: relative;
+}
+
+.t3 .stat {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 10px 12px;
+  backdrop-filter: blur(10px);
+}
+
+.t3 .stat .sl { font-size: 10px; color: #94a3b8; margin-bottom: 4px; font-weight: 400; }
+.t3 .stat .sv { font-size: 22px; font-weight: 700; }
+.t3 .stat.s-total .sv { color: #f8fafc; }
+.t3 .stat.s-aprov .sv { color: #34d399; }
+.t3 .stat.s-cancel .sv { color: #f87171; }
+
+.t3 .rows { display: flex; flex-direction: column; gap: 6px; position: relative; }
+
+.t3 .row {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.t3 .row .rnum { font-size: 12px; font-weight: 600; color: #a78bfa; }
+.t3 .row .rassunto { font-size: 11px; color: #e2e8f0; font-weight: 400; }
+.t3 .row .rsub { font-size: 10px; color: #64748b; }
+
+.t3 .pill-aprov { background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.25); font-size: 9px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+.t3 .pill-cancel { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.25); font-size: 9px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+
+/* vote */
+.vote-area {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  text-align: center;
+}
+
+.vote-area p { font-size: 13px; color: #666; margin-bottom: 16px; }
+
+.vote-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.vote-btn {
+  padding: 12px 28px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: #1a1a1a;
+  color: #ccc;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.vote-btn:hover { border-color: #fff; color: #fff; background: #222; }
+.vote-btn.t1-btn:hover { border-color: #2f81f7; color: #2f81f7; }
+.vote-btn.t2-btn:hover { border-color: #78a9ff; color: #78a9ff; }
+.vote-btn.t3-btn:hover { border-color: #8b5cf6; color: #8b5cf6; }
 </style>
 </head>
 <body>
-<div class="wrapper">
 
-  <!-- ══ SCREEN: UPLOAD ══ -->
-  <div id="screenUpload" class="screen active">
-    <div class="upload-screen">
-      <div class="upload-card">
-        <div class="upload-logo">
-          <div class="logo-badge">E</div>
-          <div class="logo-text">
-            <h1>CGM Dashboard</h1>
-            <p>Comitê de Mudanças de TI · Energisa</p>
+<h1>Escolha o tema do dashboard</h1>
+<p class="sub">Três opções de visual e tipografia — clique no que mais gosta</p>
+
+<div class="themes">
+
+  <!-- TEMA 1: SLATE PRO -->
+  <div>
+    <div class="theme-card" id="card1">
+      <div class="t1">
+        <div class="header">
+          <div class="badge">E</div>
+          <div>
+            <div class="htitle">Comitê de Mudanças de TI</div>
+            <div class="hsub">ATA Nº 08 · 24/02/2026 · 09:30</div>
           </div>
         </div>
-
-        <div class="field-group">
-          <div class="field-label">🔑 Anthropic API Key</div>
-          <div class="api-input-wrap">
-            <input type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off">
-            <button class="toggle-vis" onclick="toggleApiVis()" title="Mostrar/ocultar">👁</button>
+        <div class="stats">
+          <div class="stat s-total"><div class="sl">Total</div><div class="sv">152</div></div>
+          <div class="stat s-aprov"><div class="sl">Aprovadas</div><div class="sv">132</div></div>
+          <div class="stat s-cancel"><div class="sl">Canceladas</div><div class="sv">20</div></div>
+        </div>
+        <div class="search">⌕ &nbsp;Buscar por GM, assunto, responsável...</div>
+        <div class="rows">
+          <div class="row">
+            <div><div class="rnum">49825</div></div>
+            <div><div class="rassunto">Teste de Velocidade Link Vivo 1G</div><div class="rsub">RODRIGO GUIMARAES DIAS · 2h</div></div>
+            <span class="pill-aprov">Aprovada</span>
+          </div>
+          <div class="row">
+            <div><div class="rnum">49832</div></div>
+            <div><div class="rassunto">Teste DC DR EPB - Infra + DEV</div><div class="rsub">MAIQUE RIBEIRO MAMEDIO · 16,98h</div></div>
+            <span class="pill-cancel">Cancelada</span>
+          </div>
+          <div class="row">
+            <div><div class="rnum">49841</div></div>
+            <div><div class="rassunto">AWDFS - Operação Assistida</div><div class="rsub">LUIZ EDUARDO DA SILVA · 2h</div></div>
+            <span class="pill-aprov">Aprovada</span>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="theme-label"><strong>① Slate Pro</strong>Escuro azulado · Fonte Geist · Cards com bordas</div>
+  </div>
 
-        <div class="field-group">
-          <div class="field-label">📄 Arquivo da ATA (PDF)</div>
-          <div class="drop-zone" id="dropZone">
-            <input type="file" id="pdfInput" accept=".pdf" onchange="onFileSelect(this)">
-            <span class="drop-icon">📋</span>
-            <p>Arraste o PDF aqui<br><span style="color:var(--text3);font-size:11px">ou clique para selecionar</span></p>
-            <div class="file-name" id="fileName"></div>
+  <!-- TEMA 2: CARBON -->
+  <div>
+    <div class="theme-card" id="card2">
+      <div class="t2">
+        <div class="header">
+          <div>
+            <div class="htitle">COMITÊ DE MUDANÇAS DE TI</div>
+            <div class="hsub">ATA Nº 08 · 2026 · ENERGISA GROUP</div>
+          </div>
+          <div class="htag">24/02/2026 · 09:30</div>
+        </div>
+        <div class="stats">
+          <div class="stat s-total"><div class="sl">Total GMs</div><div class="sv">152</div></div>
+          <div class="stat s-aprov"><div class="sl">Aprovadas</div><div class="sv">132</div></div>
+          <div class="stat s-cancel"><div class="sl">Canceladas</div><div class="sv">20</div></div>
+        </div>
+        <div class="rows">
+          <div class="row">
+            <div class="rnum">49825</div>
+            <div><div class="rassunto">Teste de Velocidade Link Vivo 1G</div><div class="rsub">RODRIGO GUIMARAES · 2h · TELECOM</div></div>
+            <span class="pill-aprov">Aprovada</span>
+          </div>
+          <div class="row">
+            <div class="rnum">49832</div>
+            <div><div class="rassunto">Teste DC DR EPB - Infra + DEV</div><div class="rsub">MAIQUE MAMEDIO · 16,98h · INFRA</div></div>
+            <span class="pill-cancel">Cancelada</span>
+          </div>
+          <div class="row">
+            <div class="rnum">49841</div>
+            <div><div class="rassunto">AWDFS - Operação Assistida</div><div class="rsub">LUIZ EDUARDO · 2h · SISTEMA</div></div>
+            <span class="pill-aprov">Aprovada</span>
           </div>
         </div>
-
-        <button class="btn-primary" id="btnProcess" onclick="startProcessing()" disabled>
-          Processar ATA →
-        </button>
-
-        <p class="hint-text">
-          A chave de API não é armazenada em nenhum servidor.<br>
-          Tudo roda direto no seu browser.<br>
-          Não tem uma chave? <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>
-        </p>
       </div>
     </div>
+    <div class="theme-label"><strong>② Carbon</strong>Cinza industrial · Fonte IBM Plex Mono · Minimalista</div>
   </div>
 
-  <!-- ══ SCREEN: LOADING ══ -->
-  <div id="screenLoading" class="screen">
-    <div class="loading-screen">
-      <div class="spinner"></div>
-      <div class="loading-title">Processando ATA...</div>
-      <div class="loading-sub">Extraindo e estruturando as Solicitações de Mudança com IA. Isso pode levar alguns segundos.</div>
-      <div class="loading-steps">
-        <div class="step active" id="step1"><div class="step-dot"></div> Lendo o PDF</div>
-        <div class="step" id="step2"><div class="step-dot"></div> Enviando para a API</div>
-        <div class="step" id="step3"><div class="step-dot"></div> Estruturando os dados</div>
-        <div class="step" id="step4"><div class="step-dot"></div> Montando o dashboard</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ SCREEN: ERROR ══ -->
-  <div id="screenError" class="screen">
-    <div class="error-screen">
-      <div class="error-icon">⚠️</div>
-      <div class="error-title">Algo deu errado</div>
-      <div class="error-msg" id="errorMsg"></div>
-      <button class="btn-secondary" onclick="goBack()">← Tentar novamente</button>
-    </div>
-  </div>
-
-  <!-- ══ SCREEN: DASHBOARD ══ -->
-  <div id="screenDashboard" class="screen">
-
-    <header>
-      <div class="header-left">
-        <div class="logo-badge">E</div>
-        <div class="logo-text">
-          <h1 style="font-family:var(--sans);font-size:18px;font-weight:700" id="dashTitle">Comitê de Mudanças de TI</h1>
-          <p style="font-size:11px;color:var(--text2);margin-top:2px" id="dashSub">—</p>
+  <!-- TEMA 3: AURORA -->
+  <div>
+    <div class="theme-card" id="card3">
+      <div class="t3">
+        <div class="header">
+          <div class="badge">E</div>
+          <div>
+            <div class="htitle">Comitê de Mudanças de TI</div>
+            <div class="hsub">ATA Nº 08 · 24/02/2026 · 09:30</div>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat s-total"><div class="sl">Total</div><div class="sv">152</div></div>
+          <div class="stat s-aprov"><div class="sl">Aprovadas</div><div class="sv">132</div></div>
+          <div class="stat s-cancel"><div class="sl">Canceladas</div><div class="sv">20</div></div>
+        </div>
+        <div class="rows">
+          <div class="row">
+            <div><div class="rnum">49825</div></div>
+            <div><div class="rassunto">Teste de Velocidade Link Vivo 1G</div><div class="rsub">Rodrigo Guimaraes · 2h</div></div>
+            <span class="pill-aprov">Aprovada</span>
+          </div>
+          <div class="row">
+            <div><div class="rnum">49832</div></div>
+            <div><div class="rassunto">Teste DC DR EPB - Infra + DEV</div><div class="rsub">Maique Mamedio · 16,98h</div></div>
+            <span class="pill-cancel">Cancelada</span>
+          </div>
+          <div class="row">
+            <div><div class="rnum">49841</div></div>
+            <div><div class="rassunto">AWDFS - Operação Assistida</div><div class="rsub">Luiz Eduardo · 2h</div></div>
+            <span class="pill-aprov">Aprovada</span>
+          </div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-        <div class="header-meta">
-          <div class="date-tag" id="dashDate">—</div>
-          <p id="dashLocal">—</p>
-        </div>
-        <button class="btn-reset" onclick="goBack()">↩ Nova ATA</button>
-      </div>
-    </header>
-
-    <!-- STATS -->
-    <div class="stats-bar">
-      <div class="stat-cell active" onclick="filterStatus('all',this)">
-        <div class="s-label"><span class="s-dot dot-all"></span>Total de GMs</div>
-        <div class="s-value c-all" id="statTotal">—</div>
-      </div>
-      <div class="stat-cell" onclick="filterStatus('aprovada',this)">
-        <div class="s-label"><span class="s-dot dot-aprovada"></span>Aprovadas</div>
-        <div class="s-value c-aprovada" id="statAprovada">—</div>
-      </div>
-      <div class="stat-cell" onclick="filterStatus('cancelada',this)">
-        <div class="s-label"><span class="s-dot dot-cancelada"></span>Canceladas</div>
-        <div class="s-value c-cancelada" id="statCancelada">—</div>
-      </div>
     </div>
+    <div class="theme-label"><strong>③ Aurora</strong>Roxo escuro · Fonte Outfit · Gradientes suaves</div>
+  </div>
 
-    <!-- CONTROLS -->
-    <div class="controls">
-      <div class="search-wrap">
-        <span class="s-icon">⌕</span>
-        <input type="text" id="searchInput" placeholder="Buscar por GM, assunto, responsável..." oninput="applyFilters()">
-      </div>
-      <select id="catFilter" onchange="applyFilters()">
-        <option value="">Todas as categorias</option>
-      </select>
-      <select id="dateFilter" onchange="applyFilters()">
-        <option value="">Todas as datas</option>
-      </select>
-      <select id="sortSelect" onchange="applyFilters()">
-        <option value="num">Ordenar: Nº GM</option>
-        <option value="inicio">Ordenar: Início</option>
-        <option value="duracao">Ordenar: Duração</option>
-      </select>
-      <span class="result-count" id="resultCount"></span>
-    </div>
+</div>
 
-    <!-- TABLE -->
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Nº GM</th>
-            <th>Cat.</th>
-            <th>Assunto</th>
-            <th>Responsável Técnico</th>
-            <th>Início</th>
-            <th>Término</th>
-            <th>Duração</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
-      <div class="empty" id="emptyState" style="display:none">
-        <div class="icon">◫</div>
-        Nenhuma GM encontrada para os filtros aplicados.
-      </div>
-    </div>
-
-  </div><!-- /screenDashboard -->
-
-</div><!-- /wrapper -->
-
-<!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-gm-label" id="mNum"></div>
-    <div class="modal-title" id="mTitle"></div>
-    <div class="modal-grid">
-      <div class="mfield"><div class="fl">Categoria</div><div class="fv" id="mCat"></div></div>
-      <div class="mfield"><div class="fl">Status</div><div class="fv" id="mStatus"></div></div>
-      <div class="mfield"><div class="fl">Início Previsto</div><div class="fv" id="mInicio"></div></div>
-      <div class="mfield"><div class="fl">Término Previsto</div><div class="fv" id="mTermino"></div></div>
-      <div class="mfield"><div class="fl">Duração Prevista</div><div class="fv" id="mDuracao"></div></div>
-      <div class="mfield full"><div class="fl">Responsável Técnico</div><div class="fv" id="mRespTec"></div></div>
-      <div class="mfield full"><div class="fl">Responsável</div><div class="fv" id="mResp"></div></div>
-      <div class="mfield full" id="mSistWrap"><div class="fl">Sistemas Afetados</div><div class="fv" id="mSist"></div></div>
-      <div class="mfield full" id="mClassWrap"><div class="fl">Classificação</div><div class="fv" id="mClass"></div></div>
-      <div class="mfield full" id="mMotivoWrap"><div class="fl">Motivo do Cancelamento</div><div class="fv" id="mMotivo" style="color:var(--red)"></div></div>
-    </div>
+<div class="vote-area">
+  <p>Qual você quer que eu use no dashboard final?</p>
+  <div class="vote-btns">
+    <button class="vote-btn t1-btn">① Slate Pro — azul escuro</button>
+    <button class="vote-btn t2-btn">② Carbon — cinza industrial</button>
+    <button class="vote-btn t3-btn">③ Aurora — roxo com gradiente</button>
   </div>
 </div>
 
-<script>
-// ══════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════
-let allGMs = [];
-let filtered = [];
-let currentStatusFilter = 'all';
-let metaInfo = {};
-
-// ══════════════════════════════════════════
-// UPLOAD SCREEN
-// ══════════════════════════════════════════
-function toggleApiVis() {
-  const inp = document.getElementById('apiKey');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-}
-
-function onFileSelect(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const fn = document.getElementById('fileName');
-  fn.textContent = '📎 ' + file.name;
-  fn.style.display = 'block';
-  checkReady();
-}
-
-// Drag and drop
-const dz = document.getElementById('dropZone');
-dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
-dz.addEventListener('drop', e => {
-  e.preventDefault();
-  dz.classList.remove('dragover');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type === 'application/pdf') {
-    const input = document.getElementById('pdfInput');
-    // Create a DataTransfer to assign files to input
-    const dt = new DataTransfer();
-    dt.items.add(file);
-    input.files = dt.files;
-    onFileSelect(input);
-  }
-});
-
-document.getElementById('apiKey').addEventListener('input', checkReady);
-
-function checkReady() {
-  const key = document.getElementById('apiKey').value.trim();
-  const file = document.getElementById('pdfInput').files[0];
-  document.getElementById('btnProcess').disabled = !(key && file);
-}
-
-// ══════════════════════════════════════════
-// SCREENS
-// ══════════════════════════════════════════
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-function goBack() {
-  allGMs = [];
-  filtered = [];
-  currentStatusFilter = 'all';
-  showScreen('screenUpload');
-}
-
-// ══════════════════════════════════════════
-// PROCESSING
-// ══════════════════════════════════════════
-async function startProcessing() {
-  const apiKey = document.getElementById('apiKey').value.trim();
-  const file = document.getElementById('pdfInput').files[0];
-  if (!apiKey || !file) return;
-
-  showScreen('screenLoading');
-  setStep(1);
-
-  try {
-    // 1) Read PDF as base64
-    const base64 = await fileToBase64(file);
-    setStep(2);
-
-    // 2) Call Claude API
-    const raw = await callClaude(apiKey, base64);
-    setStep(3);
-
-    // 3) Parse JSON
-    const data = parseResponse(raw);
-    setStep(4);
-
-    // 4) Render
-    await sleep(400);
-    renderDashboard(data);
-    showScreen('screenDashboard');
-
-  } catch (err) {
-    document.getElementById('errorMsg').textContent = err.message || String(err);
-    showScreen('screenError');
-  }
-}
-
-function fileToBase64(file) {
-  return new Promise((res, rej) => {
-    const reader = new FileReader();
-    reader.onload = () => res(reader.result.split(',')[1]);
-    reader.onerror = () => rej(new Error('Falha ao ler o arquivo PDF.'));
-    reader.readAsDataURL(file);
-  });
-}
-
-async function callClaude(apiKey, base64) {
-  const prompt = `Você receberá o PDF de uma ATA do Comitê de Mudanças de TI (CGM). 
-
-Extraia as seguintes informações e retorne SOMENTE um JSON válido, sem markdown, sem texto antes ou depois.
-
-Estrutura esperada:
-{
-  "meta": {
-    "titulo": "string",
-    "ata_numero": "string",
-    "data": "string",
-    "horario": "string",
-    "local": "string",
-    "redator": "string"
-  },
-  "gms": [
-    {
-      "numero": 12345,
-      "categoria": "string (ex: 2 - INFRAESTRUTURA)",
-      "assunto": "string",
-      "inicio": "DD/MM/YYYY HH:MM",
-      "termino": "DD/MM/YYYY HH:MM",
-      "duracao": "string (ex: 2 horas)",
-      "responsavel_tecnico": "string",
-      "responsavel": "string",
-      "sistemas": "string (ou vazio)",
-      "classificacao": "string (ou vazio)",
-      "status": "aprovada ou cancelada",
-      "motivo_cancelamento": "string (ou vazio, apenas se cancelada)"
-    }
-  ]
-}
-
-Regras:
-- status = "cancelada" se houver qualquer texto de cancelamento (ex: "Cancelada pelo solicitante", "Cancelada. Demanda não homologada", "Cancelada. Mudança não apresentada" etc.)
-- status = "aprovada" para todos os outros casos
-- Extraia TODAS as GMs do documento, sem exceção
-- Retorne apenas o JSON, nada mais`;
-
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: JSON.stringify({
-      model: 'claude-opus-4-6',
-      max_tokens: 8000,
-      messages: [{
-        role: 'user',
-        content: [
-          {
-            type: 'document',
-            source: { type: 'base64', media_type: 'application/pdf', data: base64 }
-          },
-          { type: 'text', text: prompt }
-        ]
-      }]
-    })
-  });
-
-  if (!resp.ok) {
-    const err = await resp.json().catch(() => ({}));
-    if (resp.status === 401) throw new Error('API Key inválida ou sem permissão. Verifique sua chave em console.anthropic.com');
-    if (resp.status === 429) throw new Error('Limite de requisições atingido. Aguarde alguns segundos e tente novamente.');
-    throw new Error(`Erro da API (${resp.status}): ${err.error?.message || 'Erro desconhecido'}`);
-  }
-
-  const data = await resp.json();
-  return data.content.map(c => c.text || '').join('');
-}
-
-function parseResponse(raw) {
-  // Remove possible markdown fences
-  const clean = raw.replace(/```json|```/g, '').trim();
-  try {
-    return JSON.parse(clean);
-  } catch (e) {
-    // Try to extract JSON object
-    const match = clean.match(/\{[\s\S]*\}/);
-    if (match) return JSON.parse(match[0]);
-    throw new Error('Não foi possível interpretar a resposta da IA. O PDF pode não ser uma ATA de CGM válida.');
-  }
-}
-
-function setStep(n) {
-  for (let i = 1; i <= 4; i++) {
-    const el = document.getElementById('step' + i);
-    el.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
-  }
-}
-
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-// ══════════════════════════════════════════
-// DASHBOARD
-// ══════════════════════════════════════════
-function renderDashboard(data) {
-  metaInfo = data.meta || {};
-  allGMs = data.gms || [];
-
-  // Header
-  document.getElementById('dashTitle').textContent = metaInfo.titulo || 'Comitê de Mudanças de TI';
-  document.getElementById('dashSub').textContent = `ATA Nº ${metaInfo.ata_numero || '—'}  ·  ${metaInfo.redator ? 'Redigido por ' + metaInfo.redator : ''}`;
-  document.getElementById('dashDate').textContent = `${metaInfo.data || '—'} · ${metaInfo.horario || '—'}`;
-  document.getElementById('dashLocal').textContent = metaInfo.local || '—';
-
-  // Stats
-  document.getElementById('statTotal').textContent = allGMs.length;
-  document.getElementById('statAprovada').textContent = allGMs.filter(g => g.status === 'aprovada').length;
-  document.getElementById('statCancelada').textContent = allGMs.filter(g => g.status === 'cancelada').length;
-
-  // Build category filter
-  const cats = [...new Set(allGMs.map(g => g.categoria))].sort();
-  const catSel = document.getElementById('catFilter');
-  catSel.innerHTML = '<option value="">Todas as categorias</option>';
-  cats.forEach(c => {
-    const o = document.createElement('option');
-    const num = c.split(' - ')[0];
-    o.value = num;
-    o.textContent = c;
-    catSel.appendChild(o);
-  });
-
-  // Build date filter from all unique dates in inicio/termino
-  const dates = [...new Set(allGMs.flatMap(g => [
-    g.inicio?.split(' ')[0],
-    g.termino?.split(' ')[0]
-  ].filter(Boolean)))].sort((a,b) => {
-    const [da,ma,ya] = a.split('/');
-    const [db,mb,yb] = b.split('/');
-    return new Date(`${ya}-${ma}-${da}`) - new Date(`${yb}-${mb}-${db}`);
-  });
-
-  const dateSel = document.getElementById('dateFilter');
-  dateSel.innerHTML = '<option value="">Todas as datas</option>';
-  const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  dates.forEach(d => {
-    const [day,mon,year] = d.split('/');
-    const weekday = days[new Date(`${year}-${mon}-${day}`).getDay()];
-    const o = document.createElement('option');
-    o.value = d;
-    o.textContent = `${d} — ${weekday}`;
-    dateSel.appendChild(o);
-  });
-
-  currentStatusFilter = 'all';
-  document.querySelectorAll('.stat-cell').forEach((c,i) => {
-    c.classList.toggle('active', i === 0);
-  });
-
-  applyFilters();
-}
-
-// ── FILTERS ──
-function filterStatus(status, el) {
-  currentStatusFilter = status;
-  document.querySelectorAll('.stat-cell').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  applyFilters();
-}
-
-function applyFilters() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  const cat = document.getElementById('catFilter').value;
-  const dateF = document.getElementById('dateFilter').value;
-  const sort = document.getElementById('sortSelect').value;
-
-  filtered = allGMs.filter(g => {
-    const matchStatus = currentStatusFilter === 'all' || g.status === currentStatusFilter;
-    const matchCat = !cat || (g.categoria || '').startsWith(cat);
-    const matchDate = !dateF || (g.inicio || '').startsWith(dateF) || (g.termino || '').startsWith(dateF);
-    const matchQ = !q
-      || String(g.numero).includes(q)
-      || (g.assunto || '').toLowerCase().includes(q)
-      || (g.responsavel_tecnico || '').toLowerCase().includes(q)
-      || (g.responsavel || '').toLowerCase().includes(q);
-    return matchStatus && matchCat && matchDate && matchQ;
-  });
-
-  if (sort === 'inicio') {
-    filtered.sort((a,b) => parseDate(a.inicio) - parseDate(b.inicio));
-  } else if (sort === 'duracao') {
-    filtered.sort((a,b) => parseFloat(b.duracao) - parseFloat(a.duracao));
-  } else {
-    filtered.sort((a,b) => (a.numero || 0) - (b.numero || 0));
-  }
-
-  document.getElementById('resultCount').textContent = `${filtered.length} resultado${filtered.length !== 1 ? 's' : ''}`;
-  renderTable();
-}
-
-function parseDate(str) {
-  if (!str) return 0;
-  const [d, t = '00:00'] = str.split(' ');
-  const [day,mon,year] = d.split('/');
-  return new Date(`${year}-${mon}-${day}T${t}`);
-}
-
-function renderTable() {
-  const tbody = document.getElementById('tableBody');
-  const empty = document.getElementById('emptyState');
-
-  if (filtered.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
-
-  empty.style.display = 'none';
-  tbody.innerHTML = filtered.map(g => {
-    const idx = allGMs.indexOf(g);
-    const catNum = (g.categoria || '').split(' - ')[0];
-    return `<tr onclick="openModal(${idx})">
-      <td><span class="gm-num">${g.numero}</span></td>
-      <td><span class="cat-badge">${catNum}</span></td>
-      <td><div class="assunto-cell" title="${esc(g.assunto)}">${esc(g.assunto)}</div></td>
-      <td style="font-size:11px;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${titleCase(g.responsavel_tecnico || '—')}</td>
-      <td class="time-text">${g.inicio || '—'}</td>
-      <td class="time-text">${g.termino || '—'}</td>
-      <td class="dur-text">${g.duracao || '—'}</td>
-      <td><span class="status-badge badge-${g.status}">
-        <span style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block"></span>
-        ${g.status === 'aprovada' ? 'Aprovada' : 'Cancelada'}
-      </span></td>
-    </tr>`;
-  }).join('');
-}
-
-// ── MODAL ──
-function openModal(idx) {
-  const g = allGMs[idx];
-  document.getElementById('mNum').textContent = `GM · ${g.numero}`;
-  document.getElementById('mTitle').textContent = g.assunto || '—';
-  document.getElementById('mCat').textContent = g.categoria || '—';
-  document.getElementById('mStatus').innerHTML = `<span class="status-badge badge-${g.status}" style="font-size:12px">${g.status === 'aprovada' ? '✓ Aprovada' : '✕ Cancelada'}</span>`;
-  document.getElementById('mInicio').textContent = g.inicio || '—';
-  document.getElementById('mTermino').textContent = g.termino || '—';
-  document.getElementById('mDuracao').textContent = g.duracao || '—';
-  document.getElementById('mRespTec').textContent = titleCase(g.responsavel_tecnico || '—');
-  document.getElementById('mResp').textContent = g.responsavel || '—';
-
-  toggle('mSistWrap', g.sistemas, 'mSist');
-  toggle('mClassWrap', g.classificacao, 'mClass');
-
-  const motiWrap = document.getElementById('mMotivoWrap');
-  if (g.status === 'cancelada' && g.motivo_cancelamento) {
-    motiWrap.style.display = '';
-    document.getElementById('mMotivo').textContent = g.motivo_cancelamento;
-  } else {
-    motiWrap.style.display = 'none';
-  }
-
-  document.getElementById('modalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function toggle(wrapId, value, valueId) {
-  const wrap = document.getElementById(wrapId);
-  if (value) {
-    wrap.style.display = '';
-    document.getElementById(valueId).textContent = value;
-  } else {
-    wrap.style.display = 'none';
-  }
-}
-
-function closeModal(e) {
-  if (!e || e.target === document.getElementById('modalOverlay') || e.target.classList.contains('modal-close')) {
-    document.getElementById('modalOverlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-}
-
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal({target:document.getElementById('modalOverlay')}); });
-
-// ── UTILS ──
-function esc(str) { return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function titleCase(str) { return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); }
-</script>
 </body>
 </html>
