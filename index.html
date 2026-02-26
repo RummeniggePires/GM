@@ -117,11 +117,6 @@ body {
 .btn-upload:hover { opacity: 0.88; }
 .btn-upload:disabled { opacity: 0.35; cursor: not-allowed; }
 
-.upload-note {
-  margin-top: 14px; font-size: 11px; color: var(--text3);
-  text-align: center; line-height: 1.7;
-}
-
 /* ══ LOADING ══ */
 #screenLoading {
   min-height: 100vh; flex-direction: column;
@@ -140,36 +135,7 @@ body {
 
 .loading-title { font-size: 16px; font-weight: 600; color: var(--text); }
 
-.loading-steps { display: flex; flex-direction: column; gap: 8px; min-width: 260px; }
-
-.lstep { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text3); transition: color 0.3s; }
-.lstep.active { color: var(--accent); }
-.lstep.done   { color: var(--green); }
-.lstep-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); flex-shrink: 0; transition: background 0.3s; }
-.lstep.active .lstep-dot { background: var(--accent); }
-.lstep.done   .lstep-dot { background: var(--green); }
-
-/* ══ ERROR ══ */
-#screenError {
-  min-height: 100vh; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 14px; padding: 40px;
-}
-.err-icon { font-size: 44px; }
-.err-title { font-size: 18px; font-weight: 700; color: var(--red); }
-.err-box {
-  background: rgba(248,81,73,0.07); border: 1px solid rgba(248,81,73,0.2);
-  border-radius: 8px; padding: 14px 20px; font-size: 12px;
-  color: var(--text2); line-height: 1.7; max-width: 440px; text-align: center;
-}
-.btn-back {
-  background: none; border: 1px solid var(--border); color: var(--text2);
-  font-family: var(--font); font-size: 12px; padding: 9px 20px;
-  border-radius: 6px; cursor: pointer; margin-top: 4px; transition: all 0.15s;
-}
-.btn-back:hover { border-color: var(--text2); color: var(--text); }
-
-/* ══ HEADER ══ */
+/* ══ DASHBOARD ══ */
 header {
   padding: 16px 32px; border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between;
@@ -178,22 +144,7 @@ header {
 .hd-left { display: flex; align-items: center; gap: 12px; }
 .hd-title { font-size: 15px; font-weight: 700; color: var(--text); }
 .hd-sub   { font-size: 11px; color: var(--text2); margin-top: 1px; }
-.hd-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
-.tag {
-  font-size: 11px; font-family: var(--mono); padding: 4px 10px;
-  border-radius: 4px; background: rgba(47,129,247,0.1);
-  border: 1px solid rgba(47,129,247,0.25); color: var(--accent);
-}
-
-.btn-nova {
-  background: none; border: 1px solid var(--border); color: var(--text3);
-  font-family: var(--font); font-size: 11px; padding: 6px 14px;
-  border-radius: 6px; cursor: pointer; transition: all 0.15s;
-}
-.btn-nova:hover { border-color: var(--red); color: var(--red); }
-
-/* ══ STATS ══ */
 .stats-row {
   display: grid; grid-template-columns: repeat(3, 1fr);
   border-bottom: 1px solid var(--border);
@@ -230,21 +181,7 @@ header {
   color: var(--text); font-family: var(--font); font-size: 12px;
   padding: 8px 12px 8px 34px; border-radius: 6px; outline: none; transition: border-color 0.15s;
 }
-.sw input:focus { border-color: var(--accent); }
-.sw input::placeholder { color: var(--text3); }
 .sw-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 14px; pointer-events: none; }
-
-select {
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); font-family: var(--font); font-size: 11px;
-  padding: 8px 28px 8px 11px; border-radius: 6px; outline: none;
-  cursor: pointer; appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%238b949e' d='M5 7L1 2h8z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 9px center;
-  transition: border-color 0.15s;
-}
-select:focus { border-color: var(--accent); }
-.rc { font-size: 11px; color: var(--text3); white-space: nowrap; }
 
 /* ══ TABLE ══ */
 .tbl-wrap { padding: 0 32px 48px; overflow-x: auto; }
@@ -258,19 +195,13 @@ tbody tr { border-bottom: 1px solid rgba(33,38,45,0.8); transition: background 0
 tbody tr:hover { background: var(--surface2); }
 tbody td { padding: 10px 10px; font-size: 12px; color: var(--text2); vertical-align: middle; }
 
-.td-num  { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--accent); white-space: nowrap; }
-.td-cat  { font-size: 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text3); padding: 2px 7px; border-radius: 4px; white-space: nowrap; display: inline-block; }
-.td-assunto { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); font-size: 12px; }
-.td-time { font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+.td-num  { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--accent); }
 .td-dur  { font-family: var(--mono); font-size: 11px; color: #58a6ff; white-space: nowrap; }
 
 .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
 .badge-aprov  { background: rgba(63,185,80,0.12);  color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
 .badge-cancel { background: rgba(248,81,73,0.12);  color: var(--red);   border: 1px solid rgba(248,81,73,0.3); }
 .badge-dot    { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-
-.empty { text-align: center; padding: 56px 20px; color: var(--text3); font-size: 13px; }
-.empty-icon { font-size: 32px; margin-bottom: 10px; }
 
 /* ══ MODAL ══ */
 .overlay {
@@ -279,455 +210,240 @@ tbody td { padding: 10px 10px; font-size: 12px; color: var(--text2); vertical-al
   align-items: center; justify-content: center; padding: 20px;
 }
 .overlay.open { display: flex; }
-
 .modal {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 12px; max-width: 560px; width: 100%;
   max-height: 88vh; overflow-y: auto; padding: 26px;
-  position: relative; animation: fadeUp 0.16s ease;
+  position: relative;
 }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-
-.modal-x { position: absolute; top: 14px; right: 14px; background: none; border: none; color: var(--text3); font-size: 18px; cursor: pointer; padding: 4px 8px; border-radius: 4px; line-height: 1; transition: color 0.12s; }
-.modal-x:hover { color: var(--text); }
-
 .m-num-tag { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
-.m-title   { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.4; margin-bottom: 20px; padding-right: 28px; }
+.m-title   { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.4; margin-bottom: 20px; }
 .m-grid    { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
 .mf { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; }
 .mf.full { grid-column: span 2; }
-.mf-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 4px; font-weight: 500; }
-.mf-val   { font-size: 12px; color: var(--text); font-weight: 500; line-height: 1.5; }
-
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.mf-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 4px; }
+.mf-val   { font-size: 12px; color: var(--text); font-weight: 500; }
 </style>
 </head>
 <body>
 
-<!-- ══ UPLOAD ══ -->
 <div id="screenUpload" class="screen active">
   <div class="upload-card">
     <div class="upload-logo">
       <div class="logo-icon">E</div>
-      <div class="logo-text">
-        <strong>CGM Dashboard</strong>
-        <span>Comitê de Mudanças de TI · Energisa</span>
-      </div>
+      <div class="logo-text"><strong>CGM Dashboard</strong><span>Energisa</span></div>
     </div>
     <div class="field-label">Arquivo da ATA (PDF)</div>
     <div class="drop-zone" id="dropZone">
       <input type="file" id="pdfInput" accept=".pdf" onchange="onFile(this)">
       <span class="drop-icon">📋</span>
-      <div class="drop-main"><strong>Clique para selecionar</strong> ou arraste o PDF aqui</div>
+      <div class="drop-main"><strong>Clique para selecionar</strong> ou arraste aqui</div>
       <div class="file-selected" id="fileSelected"><span>✓</span><span id="fileName"></span></div>
     </div>
     <button class="btn-upload" id="btnProcess" onclick="process()" disabled>Processar ATA →</button>
-    <p class="upload-note">Tudo roda no seu browser. Nenhum dado é enviado para servidores externos.</p>
   </div>
 </div>
 
-<!-- ══ LOADING ══ -->
 <div id="screenLoading" class="screen">
   <div class="spinner"></div>
-  <div class="loading-title">Lendo a ATA...</div>
-  <div class="loading-steps">
-    <div class="lstep active" id="ls1"><div class="lstep-dot"></div>Carregando PDF</div>
-    <div class="lstep"        id="ls2"><div class="lstep-dot"></div>Extraindo texto</div>
-    <div class="lstep"        id="ls3"><div class="lstep-dot"></div>Identificando GMs</div>
-    <div class="lstep"        id="ls4"><div class="lstep-dot"></div>Montando dashboard</div>
-  </div>
+  <div class="loading-title">Processando documentos...</div>
 </div>
 
-<!-- ══ ERROR ══ -->
-<div id="screenError" class="screen">
-  <div class="err-icon">⚠️</div>
-  <div class="err-title">Algo deu errado</div>
-  <div class="err-box" id="errMsg"></div>
-  <button class="btn-back" onclick="goBack()">← Tentar novamente</button>
-</div>
-
-<!-- ══ DASHBOARD ══ -->
 <div id="screenDash" class="screen">
   <header>
     <div class="hd-left">
       <div class="logo-icon">E</div>
-      <div>
-        <div class="hd-title" id="dTitle">Comitê de Mudanças de TI</div>
-        <div class="hd-sub"   id="dSub">—</div>
-      </div>
+      <div><div class="hd-title" id="dTitle">Comitê de Mudanças</div><div class="hd-sub" id="dSub"></div></div>
     </div>
-    <div class="hd-right">
-      <span class="tag" id="dTag">—</span>
-      <button class="btn-nova" onclick="goBack()">↩ Nova ATA</button>
-    </div>
+    <button class="btn-upload" style="width:auto; padding:6px 15px" onclick="location.reload()">Nova ATA</button>
   </header>
 
   <div class="stats-row">
     <div class="stat-card on" onclick="setStatus('all',this)">
-      <div class="sc-label"><span class="dot d-total"></span>Total de GMs</div>
-      <div class="sc-value c-total" id="sTotal">—</div>
+      <div class="sc-label"><span class="dot d-total"></span>Total</div>
+      <div class="sc-value c-total" id="sTotal">0</div>
     </div>
     <div class="stat-card" onclick="setStatus('aprovada',this)">
       <div class="sc-label"><span class="dot d-aprov"></span>Aprovadas</div>
-      <div class="sc-value c-aprov" id="sAprov">—</div>
+      <div class="sc-value c-aprov" id="sAprov">0</div>
     </div>
     <div class="stat-card" onclick="setStatus('cancelada',this)">
       <div class="sc-label"><span class="dot d-cancel"></span>Canceladas</div>
-      <div class="sc-value c-cancel" id="sCancel">—</div>
+      <div class="sc-value c-cancel" id="sCancel">0</div>
     </div>
   </div>
 
   <div class="controls">
-    <div class="sw">
-      <span class="sw-icon">⌕</span>
-      <input type="text" id="search" placeholder="Buscar por GM, assunto, responsável..." oninput="filter()">
-    </div>
-    <select id="selCat"  onchange="filter()"><option value="">Todas as categorias</option></select>
-    <select id="selDate" onchange="filter()"><option value="">Todas as datas</option></select>
-    <select id="selSort" onchange="filter()">
-      <option value="num">Ordenar: Nº GM</option>
-      <option value="inicio">Ordenar: Início</option>
-      <option value="dur">Ordenar: Duração</option>
-    </select>
-    <span class="rc" id="rc"></span>
+    <div class="sw"><span class="sw-icon">⌕</span><input type="text" id="search" placeholder="Buscar GM ou assunto..." oninput="filter()"></div>
   </div>
 
   <div class="tbl-wrap">
     <table>
       <thead>
-        <tr>
-          <th>Nº GM</th><th>Cat.</th><th>Assunto</th><th>Resp. Técnico</th>
-          <th>Início</th><th>Término</th><th>Duração</th><th>Status</th>
-        </tr>
+        <tr><th>Nº GM</th><th>Assunto</th><th>Início</th><th>Duração</th><th>Status</th></tr>
       </thead>
       <tbody id="tbody"></tbody>
     </table>
-    <div class="empty" id="empty" style="display:none">
-      <div class="empty-icon">◫</div>
-      Nenhuma GM encontrada para os filtros aplicados.
-    </div>
   </div>
 </div>
 
-<!-- ══ MODAL ══ -->
 <div class="overlay" id="overlay" onclick="closeMd(event)">
   <div class="modal">
-    <button class="modal-x" onclick="closeMd()">✕</button>
     <div class="m-num-tag" id="mNum"></div>
-    <div class="m-title"   id="mTit"></div>
+    <div class="m-title" id="mTit"></div>
     <div class="m-grid">
-      <div class="mf"><div class="mf-label">Categoria</div><div class="mf-val" id="mCat"></div></div>
-      <div class="mf"><div class="mf-label">Status</div><div class="mf-val" id="mSt"></div></div>
-      <div class="mf"><div class="mf-label">Início Previsto</div><div class="mf-val" id="mIni"></div></div>
-      <div class="mf"><div class="mf-label">Término Previsto</div><div class="mf-val" id="mFim"></div></div>
-      <div class="mf"><div class="mf-label">Duração Prevista</div><div class="mf-val" id="mDur"></div></div>
+      <div class="mf"><div class="mf-label">Início</div><div class="mf-val" id="mIni"></div></div>
+      <div class="mf"><div class="mf-label">Duração</div><div class="mf-val" id="mDur"></div></div>
       <div class="mf full"><div class="mf-label">Responsável Técnico</div><div class="mf-val" id="mRtec"></div></div>
-      <div class="mf full"><div class="mf-label">Responsável</div><div class="mf-val" id="mResp"></div></div>
-      <div class="mf full" id="mSistW"><div class="mf-label">Sistemas Afetados</div><div class="mf-val" id="mSist"></div></div>
-      <div class="mf full" id="mClsW"><div class="mf-label">Classificação</div><div class="mf-val" id="mCls"></div></div>
-      <div class="mf full" id="mMotW"><div class="mf-label">Motivo do Cancelamento</div><div class="mf-val" id="mMot" style="color:var(--red)"></div></div>
+      <div class="mf full" id="mMotW"><div class="mf-label">Motivo do Cancelamento</div><div class="mf-val" id="mMot" style="color:var(--red); font-weight:bold"></div></div>
     </div>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-let ALL = [], VIS = [], STATUS = 'all';
+let ALL_GMS = [], VISIBLE_GMS = [], FILTER_STATUS = 'all';
 
-// ── Upload ──
-const dz = document.getElementById('dropZone');
-dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('over'));
-dz.addEventListener('drop', e => {
-  e.preventDefault(); dz.classList.remove('over');
-  const f = e.dataTransfer.files[0];
-  if (f?.type === 'application/pdf') assignFile(f);
-});
-
-function onFile(inp) { if (inp.files[0]) assignFile(inp.files[0]); }
-
-function assignFile(f) {
-  const dt = new DataTransfer(); dt.items.add(f);
-  document.getElementById('pdfInput').files = dt.files;
-  document.getElementById('fileName').textContent = f.name;
-  document.getElementById('fileSelected').classList.add('show');
-  document.getElementById('btnProcess').disabled = false;
-}
-
-function goBack() {
-  ALL = []; VIS = []; STATUS = 'all';
-  document.getElementById('pdfInput').value = '';
-  document.getElementById('fileSelected').classList.remove('show');
-  document.getElementById('btnProcess').disabled = true;
-  show('screenUpload');
-}
-
-function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-function step(n) {
-  for (let i = 1; i <= 4; i++) {
-    const el = document.getElementById('ls' + i);
-    el.className = 'lstep' + (i < n ? ' done' : i === n ? ' active' : '');
+function onFile(inp) {
+  if (inp.files[0]) {
+    document.getElementById('fileName').textContent = inp.files[0].name;
+    document.getElementById('fileSelected').classList.add('show');
+    document.getElementById('btnProcess').disabled = false;
   }
 }
 
-// ── Process ──
 async function process() {
   const file = document.getElementById('pdfInput').files[0];
   if (!file) return;
-  show('screenLoading'); step(1);
+  document.getElementById('screenUpload').classList.remove('active');
+  document.getElementById('screenLoading').classList.add('active');
+
   try {
     const buf = await file.arrayBuffer();
-    step(2);
     const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-    let txt = '';
+    let fullText = "";
+    
     for (let i = 1; i <= pdf.numPages; i++) {
-      const pg   = await pdf.getPage(i);
-      const cont = await pg.getTextContent();
-      txt += cont.items.map(it => it.str).join(' ') + '\n';
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      fullText += content.items.map(s => s.str).join(' ') + "\n";
     }
-    step(3);
-    const meta = parseMeta(txt);
-    const gms  = parseGMs(txt);
-    if (!gms.length) throw new Error('Nenhuma GM encontrada. Verifique se o arquivo é uma ATA do CGM no formato padrão.');
-    step(4);
-    await sleep(300);
-    buildDash(meta, gms);
-    show('screenDash');
-  } catch(e) {
-    document.getElementById('errMsg').textContent = e.message || String(e);
-    show('screenError');
+
+    // Normaliza espaços para facilitar regex
+    const normalizedText = fullText.replace(/\s+/g, ' ');
+    ALL_GMS = parseGMs(normalizedText);
+    
+    renderDash();
+    document.getElementById('screenLoading').classList.remove('active');
+    document.getElementById('screenDash').classList.add('active');
+  } catch (e) {
+    alert("Erro ao ler PDF: " + e.message);
+    location.reload();
   }
 }
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function parseGMs(text) {
+    // Divide o texto pelos números de mudança (ex: 149) Número Mudança: 49982)
+    const blocks = text.split(/\d+\)\s+Número Mudança:/g).slice(1);
+    
+    return blocks.map(block => {
+        const gm = {};
+        
+        // Número da GM
+        gm.num = block.match(/^\s*(\d+)/)?.[1] || "—";
+        
+        // Assunto (Texto entre o número e "Início Previsto")
+        gm.assunto = block.match(/\d+\s+(.*?)\s+Início Previsto/i)?.[1]?.trim() || "Sem assunto";
 
-// ── Parsers ──
-function parseMeta(txt) {
-  const m = {};
-  const mAta = txt.match(/Ata\s+n[°º\.]\s*(\d+[\/-]\d+)/i) || txt.match(/REUNI[AÃ]O\s+N[°º]\s*(\d+\/\d+)/i);
-  if (mAta) m.ata = mAta[1];
-  const mData = txt.match(/(\d{2}\/\d{2}\/\d{4})/);
-  if (mData) m.data = mData[1];
-  const mHora = txt.match(/(\d{2}:\d{2})\s*(h|hs)?/i);
-  if (mHora) m.hora = mHora[1];
-  if (/teams/i.test(txt)) m.local = 'Microsoft Teams';
-  else if (/zoom/i.test(txt)) m.local = 'Zoom';
-  else if (/meet/i.test(txt)) m.local = 'Google Meet';
-  return m;
+        // Início e Término
+        gm.inicio = block.match(/Início Previsto:\s+([\d/: ]+)/)?.[1] || "—";
+        gm.termino = block.match(/Término Previsto:\s+([\d/: ]+)/)?.[1] || "—";
+        
+        // Duração (Tempo de Execução) - Agora pegando corretamente
+        gm.duracao = block.match(/Duração Prevista:\s*([^\n\r]+?)(?=Responsável Técnico|Sistemas|$)/i)?.[1]?.trim() || "—";
+
+        // Responsável Técnico
+        gm.respTec = block.match(/Responsável Técnico:\s*([A-Z\s]+?)(?=Sistemas|Classificação|$)/i)?.[1]?.trim() || "—";
+
+        // Status e Motivo do Cancelamento
+        // O PDF indica cancelamento com "Cancelada pelo solicitante" ou frases similares após a Classificação
+        const cancelMatch = block.match(/Cancelada[\s\.].*?(?=\d+\)|$)/i);
+        if (cancelMatch) {
+            gm.status = 'cancelada';
+            gm.motivo = cancelMatch[0].trim();
+        } else {
+            gm.status = 'aprovada';
+            gm.motivo = '';
+        }
+
+        return gm;
+    });
 }
 
-function parseGMs(txt) {
-  const norm = txt.replace(/\s+/g, ' ');
-  const gmRe = /\b(\d{5,6})\b/g;
-  let m; const seen = new Set(); const pts = [];
-  while ((m = gmRe.exec(norm)) !== null) {
-    const n = parseInt(m[1]);
-    if (n >= 40000 && n <= 99999 && !seen.has(n)) { seen.add(n); pts.push({ n, idx: m.index }); }
-  }
-  return pts.map((p, i) => {
-    const chunk = norm.slice(p.idx, pts[i+1] ? pts[i+1].idx : Math.min(p.idx + 900, norm.length));
-    return extractGM(p.n, chunk);
-  }).filter(Boolean);
-}
-
-function extractGM(num, chunk) {
-  const catMap = {'1':'1 - Sistema','2':'2 - Infraestrutura','3':'3 - Telecom (Dados)','4':'4 - Telecom (Telefonia e Rádio)','5':'5 - Sistema (Banco de Dados)','6':'6 - Sistema (Infraestrutura)','7':'7 - Telecom (Infraestrutura)','8':'8 - Sistema'};
-
-  // Categoria
-  let cat = '';
-  const cm = chunk.match(/\b([1-8])\s*[-–]\s*(Sistema|Infraestrutura|Telecom)/i);
-  if (cm) cat = catMap[cm[1]] || cm[0];
-  else { const cn = chunk.match(/\b([1-8])\b/); if (cn && catMap[cn[1]]) cat = catMap[cn[1]]; }
-
-  // Datas
-  const dateRe = /(\d{2}\/\d{2}\/\d{4})\s+(\d{2}:\d{2})/g;
-  const dates = []; let dm;
-  while ((dm = dateRe.exec(chunk)) !== null) dates.push(dm[1] + ' ' + dm[2]);
-  const inicio = dates[0] || '', termino = dates[1] || '';
-
-  // Duração
-  const durM = chunk.match(/(\d+[,\.]\d+|\d+)\s*h\b/i);
-  const duracao = durM ? durM[1].replace('.', ',') + 'h' : '';
-
-  // Status
-  const status = /cancelad[ao]/i.test(chunk) ? 'cancelada' : 'aprovada';
-
-  // Motivo
-  let motivo = '';
-  if (status === 'cancelada') {
-    const mot = chunk.match(/[Cc]ancelad[ao][^.]{0,10}[-–:]\s*([^.]{5,100})/);
-    if (mot) motivo = mot[1].trim();
-    else {
-      const mot2 = chunk.match(/[Cc]ancelad[ao]\s+([A-Za-z][^.]{5,80})/);
-      if (mot2) motivo = mot2[1].trim();
-    }
-  }
-
-  // Assunto — texto após o número GM, antes da primeira data
-  const numStr = String(num);
-  const afterNum = chunk.slice(chunk.indexOf(numStr) + numStr.length).trim();
-  let assunto = afterNum.split(/\d{2}\/\d{2}\/\d{4}/)[0]
-    .replace(/^[1-8]\s*[-–]\s*(Sistema|Infraestrutura|Telecom)[^\s]*/i, '')
-    .replace(/^[1-8]\s+/, '')
-    .trim().slice(0, 130).replace(/\s+/g,' ').trim();
-
-  // Responsável técnico — nome em MAIÚSCULAS
-  let respTec = '';
-  const rtM = chunk.match(/\b([A-ZÁÀÂÃÉÊÍÓÔÕÚÜÇ]{2,}(?:\s+[A-ZÁÀÂÃÉÊÍÓÔÕÚÜÇ]{2,}){1,4})\b/);
-  if (rtM) respTec = rtM[1].trim().slice(0, 60);
-
-  // Sistemas afetados
-  let sistemas = '';
-  const sisM = chunk.match(/[Ss]istemas?\s+[Aa]fetados?[:\s]+([^\n.]{5,120})/);
-  if (sisM) sistemas = sisM[1].trim();
-
-  // Classificação
-  const clsM = chunk.match(/\b(CORRETIVA|MELHORIA|PREVENTIVA|EMERGENCIAL)\b/i);
-  const classificacao = clsM ? clsM[1].toUpperCase() : '';
-
-  return { num, cat, assunto, inicio, termino, duracao, respTec, resp: '', sistemas, classificacao, status, motivo };
-}
-
-// ── Dashboard ──
-function buildDash(meta, gms) {
-  ALL = gms;
-  document.getElementById('dTitle').textContent = 'Comitê de Mudanças de TI';
-  document.getElementById('dSub').textContent   = `ATA Nº ${meta.ata || '—'}` + (meta.local ? '  ·  ' + meta.local : '');
-  document.getElementById('dTag').textContent   = (meta.data || '—') + (meta.hora ? ' · ' + meta.hora : '');
-  document.getElementById('sTotal').textContent  = gms.length;
-  document.getElementById('sAprov').textContent  = gms.filter(g => g.status === 'aprovada').length;
-  document.getElementById('sCancel').textContent = gms.filter(g => g.status === 'cancelada').length;
-
-  // Categorias
-  const cats = [...new Set(gms.map(g => g.cat).filter(Boolean))].sort();
-  const sc = document.getElementById('selCat');
-  sc.innerHTML = '<option value="">Todas as categorias</option>';
-  cats.forEach(c => { const o = document.createElement('option'); o.value = c.split(' - ')[0]; o.textContent = c; sc.appendChild(o); });
-
-  // Datas dinâmicas
-  const allDates = [...new Set(gms.flatMap(g => [g.inicio?.split(' ')[0], g.termino?.split(' ')[0]].filter(Boolean)))].sort((a,b) => toTs(a) - toTs(b));
-  const sd = document.getElementById('selDate');
-  sd.innerHTML = '<option value="">Todas as datas</option>';
-  const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  allDates.forEach(d => {
-    const [dd,mm,yy] = d.split('/');
-    const wd = days[new Date(`${yy}-${mm}-${dd}`).getDay()];
-    const o = document.createElement('option'); o.value = d; o.textContent = `${d} — ${wd}`; sd.appendChild(o);
-  });
-
-  STATUS = 'all';
-  document.querySelectorAll('.stat-card').forEach((c, i) => c.classList.toggle('on', i === 0));
+function renderDash() {
+  document.getElementById('sTotal').textContent = ALL_GMS.length;
+  document.getElementById('sAprov').textContent = ALL_GMS.filter(g => g.status === 'aprovada').length;
+  document.getElementById('sCancel').textContent = ALL_GMS.filter(g => g.status === 'cancelada').length;
   filter();
 }
 
-// ── Filters ──
 function setStatus(s, el) {
-  STATUS = s;
+  FILTER_STATUS = s;
   document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('on'));
   el.classList.add('on');
   filter();
 }
 
 function filter() {
-  const q    = document.getElementById('search').value.toLowerCase();
-  const cat  = document.getElementById('selCat').value;
-  const date = document.getElementById('selDate').value;
-  const sort = document.getElementById('selSort').value;
-
-  VIS = ALL.filter(g => {
-    const okSt   = STATUS === 'all' || g.status === STATUS;
-    const okCat  = !cat  || (g.cat||'').startsWith(cat);
-    const okDate = !date || (g.inicio||'').startsWith(date) || (g.termino||'').startsWith(date);
-    const okQ    = !q || String(g.num).includes(q) || (g.assunto||'').toLowerCase().includes(q) || (g.respTec||'').toLowerCase().includes(q);
-    return okSt && okCat && okDate && okQ;
+  const q = document.getElementById('search').value.toLowerCase();
+  VISIBLE_GMS = ALL_GMS.filter(g => {
+    const matchStatus = FILTER_STATUS === 'all' || g.status === FILTER_STATUS;
+    const matchSearch = g.num.includes(q) || g.assunto.toLowerCase().includes(q) || g.respTec.toLowerCase().includes(q);
+    return matchStatus && matchSearch;
   });
 
-  if (sort === 'inicio') VIS.sort((a,b) => toTs(a.inicio?.split(' ')[0]) - toTs(b.inicio?.split(' ')[0]));
-  else if (sort === 'dur') VIS.sort((a,b) => parseFloat((b.duracao||'0').replace(',','.')) - parseFloat((a.duracao||'0').replace(',','.')));
-  else VIS.sort((a,b) => a.num - b.num);
-
-  document.getElementById('rc').textContent = `${VIS.length} resultado${VIS.length !== 1 ? 's' : ''}`;
-  renderTbl();
-}
-
-function toTs(d) {
-  if (!d) return 0;
-  const p = d.split('/');
-  return p.length === 3 ? new Date(`${p[2]}-${p[1]}-${p[0]}`).getTime() : 0;
-}
-
-// ── Table ──
-function renderTbl() {
   const tbody = document.getElementById('tbody');
-  const empty = document.getElementById('empty');
-  if (!VIS.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  tbody.innerHTML = VIS.map(g => {
-    const idx  = ALL.indexOf(g);
-    const catN = (g.cat||'').split(' - ')[0];
-    const bCls = g.status === 'aprovada' ? 'badge-aprov' : 'badge-cancel';
-    const bTxt = g.status === 'aprovada' ? 'Aprovada' : 'Cancelada';
-    return `<tr onclick="openMd(${idx})">
+  tbody.innerHTML = VISIBLE_GMS.map((g, idx) => `
+    <tr onclick="openMd(${ALL_GMS.indexOf(g)})">
       <td class="td-num">${g.num}</td>
-      <td><span class="td-cat">${catN||'—'}</span></td>
-      <td><div class="td-assunto" title="${esc(g.assunto)}">${esc(g.assunto)||'—'}</div></td>
-      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px">${tc(g.respTec)||'—'}</td>
-      <td class="td-time">${g.inicio||'—'}</td>
-      <td class="td-time">${g.termino||'—'}</td>
-      <td class="td-dur">${g.duracao||'—'}</td>
-      <td><span class="badge ${bCls}"><span class="badge-dot"></span>${bTxt}</span></td>
-    </tr>`;
-  }).join('');
+      <td>${g.assunto}</td>
+      <td>${g.inicio.split(' ')[0]}</td>
+      <td class="td-dur">${g.duracao}</td>
+      <td>
+        <span class="badge ${g.status === 'aprovada' ? 'badge-aprov' : 'badge-cancel'}">
+          <span class="badge-dot"></span>${g.status === 'aprovada' ? 'Aprovada' : 'Cancelada'}
+        </span>
+      </td>
+    </tr>
+  `).join('');
 }
 
-// ── Modal ──
 function openMd(idx) {
-  const g = ALL[idx];
-  document.getElementById('mNum').textContent  = `GM · ${g.num}`;
-  document.getElementById('mTit').textContent  = g.assunto || '—';
-  document.getElementById('mCat').textContent  = g.cat || '—';
-  document.getElementById('mSt').innerHTML     = `<span class="badge ${g.status==='aprovada'?'badge-aprov':'badge-cancel'}" style="font-size:11px"><span class="badge-dot"></span>${g.status==='aprovada'?'Aprovada':'Cancelada'}</span>`;
-  document.getElementById('mIni').textContent  = g.inicio   || '—';
-  document.getElementById('mFim').textContent  = g.termino  || '—';
-  document.getElementById('mDur').textContent  = g.duracao  || '—';
-  document.getElementById('mRtec').textContent = tc(g.respTec) || '—';
-  document.getElementById('mResp').textContent = g.resp || '—';
-  showMF('mSistW','mSist', g.sistemas);
-  showMF('mClsW', 'mCls',  g.classificacao);
-  const mw = document.getElementById('mMotW');
-  if (g.status === 'cancelada') { mw.style.display = ''; document.getElementById('mMot').textContent = g.motivo || 'Não informado'; }
-  else mw.style.display = 'none';
-  document.getElementById('overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
+  const g = ALL_GMS[idx];
+  document.getElementById('mNum').textContent = `GM · ${g.num}`;
+  document.getElementById('mTit').textContent = g.assunto;
+  document.getElementById('mIni').textContent = g.inicio;
+  document.getElementById('mDur').textContent = g.duracao;
+  document.getElementById('mRtec').textContent = g.respTec;
+  
+  const motW = document.getElementById('mMotW');
+  if (g.status === 'cancelada') {
+    motW.style.display = 'block';
+    document.getElementById('mMot').textContent = g.motivo;
+  } else {
+    motW.style.display = 'none';
+  }
 
-function showMF(wId, vId, val) {
-  const w = document.getElementById(wId);
-  if (val) { w.style.display = ''; document.getElementById(vId).textContent = val; }
-  else w.style.display = 'none';
+  document.getElementById('overlay').classList.add('open');
 }
 
 function closeMd(e) {
-  if (!e || e.target === document.getElementById('overlay') || e.target.classList?.contains('modal-x')) {
+  if (!e || e.target === document.getElementById('overlay')) {
     document.getElementById('overlay').classList.remove('open');
-    document.body.style.overflow = '';
   }
 }
-
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMd({ target: document.getElementById('overlay') }); });
-
-function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function tc(s)  { return (s||'').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); }
 </script>
 </body>
 </html>
