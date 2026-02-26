@@ -3,35 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CGM Dashboard · Energisa</title>
+<title>CGM Dashboard</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;600;800&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
 <style>
-/* ====== ESTILO ORIGINAL (resumido) ====== */
 :root{
-  --bg:#0d1117;--surface:#161b22;--surface2:#1c2129;
-  --border:#21262d;--accent:#2f81f7;
-  --green:#3fb950;--red:#f85149;
+  --bg:#0d1117;--surface:#161b22;--border:#21262d;
+  --accent:#2f81f7;--green:#3fb950;--red:#f85149;
   --text:#e6edf3;--text2:#8b949e;
-  --font:'Geist',system-ui;--mono:'IBM Plex Mono',monospace
+  --font:'Geist',system-ui;--mono:'IBM Plex Mono',monospace;
 }
-*{box-sizing:border-box;margin:0}
-body{background:var(--bg);color:var(--text);font-family:var(--font)}
-.screen{display:none}.screen.active{display:block}
-button{cursor:pointer}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font)}
+header{padding:14px 24px;border-bottom:1px solid var(--border)}
+main{padding:24px}
+button{background:var(--accent);border:none;color:#fff;padding:8px 14px;border-radius:6px;cursor:pointer}
+input{margin-right:10px}
 
-/* simplificado: layout igual ao seu */
+table{width:100%;border-collapse:collapse;margin-top:20px}
+th,td{padding:8px;border-bottom:1px solid var(--border);font-size:12px}
+th{text-align:left;color:var(--text2)}
+.badge-ok{color:var(--green)}
+.badge-no{color:var(--red)}
+.mono{font-family:var(--mono)}
 </style>
 </head>
 
 <body>
 
-<input type="file" id="pdfInput" accept=".pdf">
-<button onclick="processPDF()">Processar</button>
+<header>
+  <strong>CGM · Dashboard de Atas</strong>
+</header>
 
-<pre id="debug" style="white-space:pre-wrap;color:#8b949e;font-size:11px"></pre>
+<main>
+  <input type="file" id="pdfInput" accept=".pdf">
+  <button onclick="processPDF()">Processar ATA</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nº GM</th>
+        <th>Assunto</th>
+        <th>Início</th>
+        <th>Duração</th>
+        <th>Status</th>
+        <th>Motivo Cancelamento</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</main>
 
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -39,49 +62,45 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 
 let ALL_GMS = [];
 
-/* ====== UTIL ====== */
+/* ================= UTIL ================= */
 function normalize(items){
   return items.map(i => i.str).join(' ')
     .replace(/\s+/g,' ')
     .trim();
 }
 
-function extract(regex, text, group = 1){
+function extract(regex,text,group=1){
   const m = text.match(regex);
-  return m ? m[group].trim() : 'Não informado';
+  return m ? m[group].trim() : '—';
 }
 
-/* ====== EXTRAÇÃO POR BLOCO ====== */
+/* ================= SPLIT REAL ================= */
+function splitGMs(text){
+  const rx = /número\s+mudança\s*:\s*\d+/ig;
+  const matches = [...text.matchAll(rx)];
+  const blocks = [];
+
+  for(let i=0;i<matches.length;i++){
+    const start = matches[i].index;
+    const end = matches[i+1]?.index || text.length;
+    blocks.push(text.slice(start,end));
+  }
+  return blocks;
+}
+
+/* ================= PARSER GM ================= */
 function parseGMBlock(text){
-  const gm = {};
-
-  gm.numero = extract(/número\s+mudança\s*:\s*(\d+)/i, text);
-  gm.assunto = extract(/assunto\s*:\s*(.*?)(?=início|$)/i, text);
-  gm.inicio  = extract(/início\s+previsto\s*:\s*([\d/: ]+)/i, text);
-  gm.termino= extract(/término\s+previsto\s*:\s*([\d/: ]+)/i, text);
-
-  gm.tempoExecucao = extract(
-    /tempo\s+(total\s+)?de\s+execução\s*:\s*(.*?)(?=motivo|responsável|$)/i,
-    text,
-    2
-  );
-
-  gm.respTec = extract(
-    /responsável\s+técnico\s*:\s*(.*?)(?=sistemas|classificação|$)/i,
-    text
-  );
-
-  gm.motivoCancelamento = extract(
-    /motivo\s+do\s+cancelamento\s*:\s*(.*?)(?=tempo|responsável|$)/i,
-    text
-  );
-
-  gm.status = /cancelad/i.test(text) ? 'Cancelada' : 'Aprovada';
-
-  return gm;
+  return {
+    numero: extract(/número\s+mudança\s*:\s*(\d+)/i,text),
+    assunto: extract(/assunto\s*:\s*(.*?)(?=início\s+previsto|categoria|$)/i,text),
+    inicio: extract(/início\s+previsto\s*:\s*([\d/: ]+)/i,text),
+    duracao: extract(/duração\s+prevista\s*:\s*(.*?)(?=responsável|$)/i,text),
+    motivo: extract(/motivo\s+do\s+cancelamento\s*:\s*(.*?)(?=início|responsável|$)/i,text),
+    status: /cancelad/i.test(text) ? 'Cancelada' : 'Aprovada'
+  };
 }
 
-/* ====== PROCESSAMENTO ====== */
+/* ================= PROCESS ================= */
 async function processPDF(){
   const file = document.getElementById('pdfInput').files[0];
   if(!file) return alert('Selecione um PDF');
@@ -93,19 +112,32 @@ async function processPDF(){
   for(let i=1;i<=pdf.numPages;i++){
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    fullText += '\n' + normalize(content.items);
+    fullText += ' ' + normalize(content.items);
   }
 
-  /* DEBUG */
-  document.getElementById('debug').textContent = fullText;
+  const blocks = splitGMs(fullText);
+  ALL_GMS = blocks.map(parseGMBlock);
 
-  /* SPLIT POR GM */
-  const blocks = fullText.split(/número\s+mudança\s*:/i).slice(1);
+  render();
+}
 
-  ALL_GMS = blocks.map(b => parseGMBlock(b));
+/* ================= RENDER ================= */
+function render(){
+  const tb = document.getElementById('tbody');
+  tb.innerHTML = '';
 
-  console.table(ALL_GMS);
-  alert(`Extraídas ${ALL_GMS.length} GMs`);
+  ALL_GMS.forEach(gm=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono">${gm.numero}</td>
+      <td>${gm.assunto}</td>
+      <td class="mono">${gm.inicio}</td>
+      <td class="mono">${gm.duracao}</td>
+      <td class="${gm.status==='Cancelada'?'badge-no':'badge-ok'}">${gm.status}</td>
+      <td>${gm.motivo}</td>
+    `;
+    tb.appendChild(tr);
+  });
 }
 </script>
 
