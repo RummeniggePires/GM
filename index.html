@@ -1,115 +1,79 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CGM Dashboard</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;600;800&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
-<style>
-:root{
-  --bg:#0d1117;--surface:#161b22;--border:#21262d;
-  --accent:#2f81f7;--green:#3fb950;--red:#f85149;
-  --text:#e6edf3;--text2:#8b949e;
-  --font:'Geist',system-ui;--mono:'IBM Plex Mono',monospace;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font)}
-header{padding:14px 24px;border-bottom:1px solid var(--border)}
-main{padding:24px}
-button{background:var(--accent);border:none;color:#fff;padding:8px 14px;border-radius:6px;cursor:pointer}
-input{margin-right:10px}
-
-table{width:100%;border-collapse:collapse;margin-top:20px}
-th,td{padding:8px;border-bottom:1px solid var(--border);font-size:12px}
-th{text-align:left;color:var(--text2)}
-.badge-ok{color:var(--green)}
-.badge-no{color:var(--red)}
-.mono{font-family:var(--mono)}
-</style>
-</head>
-
-<body>
-
-<header>
-  <strong>CGM · Dashboard de Atas</strong>
-</header>
-
-<main>
-  <input type="file" id="pdfInput" accept=".pdf">
-  <button onclick="processPDF()">Processar ATA</button>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Nº GM</th>
-        <th>Assunto</th>
-        <th>Início</th>
-        <th>Duração</th>
-        <th>Status</th>
-        <th>Motivo Cancelamento</th>
-      </tr>
-    </thead>
-    <tbody id="tbody"></tbody>
-  </table>
-</main>
-
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 let ALL_GMS = [];
+let VISIBLE_GMS = [];
+let FILTER_STATUS = 'all';
 
 /* ================= UTIL ================= */
-function normalize(items){
+function normalize(items) {
   return items.map(i => i.str).join(' ')
-    .replace(/\s+/g,' ')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
-function extract(regex,text,group=1){
+function extract(regex, text, group = 1) {
   const m = text.match(regex);
   return m ? m[group].trim() : '—';
 }
 
-/* ================= SPLIT REAL ================= */
-function splitGMs(text){
+/* ================= SPLIT CERTO ================= */
+function splitGMs(text) {
   const rx = /número\s+mudança\s*:\s*\d+/ig;
   const matches = [...text.matchAll(rx)];
   const blocks = [];
 
-  for(let i=0;i<matches.length;i++){
+  for (let i = 0; i < matches.length; i++) {
     const start = matches[i].index;
-    const end = matches[i+1]?.index || text.length;
-    blocks.push(text.slice(start,end));
+    const end = matches[i + 1]?.index || text.length;
+    blocks.push(text.slice(start, end));
   }
   return blocks;
 }
 
 /* ================= PARSER GM ================= */
-function parseGMBlock(text){
-  return {
-    numero: extract(/número\s+mudança\s*:\s*(\d+)/i,text),
-    assunto: extract(/assunto\s*:\s*(.*?)(?=início\s+previsto|categoria|$)/i,text),
-    inicio: extract(/início\s+previsto\s*:\s*([\d/: ]+)/i,text),
-    duracao: extract(/duração\s+prevista\s*:\s*(.*?)(?=responsável|$)/i,text),
-    motivo: extract(/motivo\s+do\s+cancelamento\s*:\s*(.*?)(?=início|responsável|$)/i,text),
-    status: /cancelad/i.test(text) ? 'Cancelada' : 'Aprovada'
-  };
+function parseGMBlock(text) {
+  const gm = {};
+
+  gm.num = extract(/número\s+mudança\s*:\s*(\d+)/i, text);
+  gm.assunto = extract(/assunto\s*:\s*(.*?)(?=início\s+previsto|categoria|$)/i, text);
+  gm.inicio = extract(/início\s+previsto\s*:\s*([\d/: ]+)/i, text);
+  gm.termino = extract(/término\s+previsto\s*:\s*([\d/: ]+)/i, text);
+
+  gm.duracao = extract(
+    /duração\s+prevista\s*:\s*(.*?)(?=responsável|$)/i,
+    text
+  );
+
+  gm.respTec = extract(
+    /responsável\s+técnico\s*:\s*(.*?)(?=sistemas|classificação|$)/i,
+    text
+  );
+
+  gm.motivo = extract(
+    /motivo\s+do\s+cancelamento\s*:\s*(.*?)(?=início|responsável|$)/i,
+    text
+  );
+
+  gm.status = /cancelad/i.test(text) ? 'cancelada' : 'aprovada';
+
+  return gm;
 }
 
 /* ================= PROCESS ================= */
-async function processPDF(){
+async function process() {
   const file = document.getElementById('pdfInput').files[0];
-  if(!file) return alert('Selecione um PDF');
+  if (!file) return;
+
+  document.getElementById('screenUpload').classList.remove('active');
+  document.getElementById('screenLoading').classList.add('active');
 
   const buf = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({data:buf}).promise;
+  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
 
   let fullText = '';
-  for(let i=1;i<=pdf.numPages;i++){
+  for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
     fullText += ' ' + normalize(content.items);
@@ -118,28 +82,86 @@ async function processPDF(){
   const blocks = splitGMs(fullText);
   ALL_GMS = blocks.map(parseGMBlock);
 
-  render();
+  document.getElementById('screenLoading').classList.remove('active');
+  document.getElementById('screenDash').classList.add('active');
+
+  renderDash();
 }
 
-/* ================= RENDER ================= */
-function render(){
+/* ================= DASH ================= */
+function renderDash() {
+  document.getElementById('sTotal').textContent = ALL_GMS.length;
+  document.getElementById('sAprov').textContent =
+    ALL_GMS.filter(g => g.status === 'aprovada').length;
+  document.getElementById('sCancel').textContent =
+    ALL_GMS.filter(g => g.status === 'cancelada').length;
+
+  filter();
+}
+
+function setStatus(st, el) {
+  FILTER_STATUS = st;
+  document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  filter();
+}
+
+function filter() {
+  const q = document.getElementById('search').value.toLowerCase();
+
+  VISIBLE_GMS = ALL_GMS.filter(g => {
+    const okStatus = FILTER_STATUS === 'all' || g.status === FILTER_STATUS;
+    const okSearch =
+      g.num.includes(q) || g.assunto.toLowerCase().includes(q);
+    return okStatus && okSearch;
+  });
+
+  renderTable();
+}
+
+/* ================= TABLE ================= */
+function renderTable() {
   const tb = document.getElementById('tbody');
   tb.innerHTML = '';
 
-  ALL_GMS.forEach(gm=>{
+  VISIBLE_GMS.forEach(g => {
     const tr = document.createElement('tr');
+    tr.onclick = () => openMd(g);
     tr.innerHTML = `
-      <td class="mono">${gm.numero}</td>
-      <td>${gm.assunto}</td>
-      <td class="mono">${gm.inicio}</td>
-      <td class="mono">${gm.duracao}</td>
-      <td class="${gm.status==='Cancelada'?'badge-no':'badge-ok'}">${gm.status}</td>
-      <td>${gm.motivo}</td>
-    `;
+      <td class="td-num">${g.num}</td>
+      <td>${g.assunto}</td>
+      <td>${g.inicio}</td>
+      <td class="td-dur">${g.duracao}</td>
+      <td>
+        <span class="badge ${g.status === 'cancelada' ? 'badge-cancel' : 'badge-aprov'}">
+          <span class="badge-dot"></span>${g.status}
+        </span>
+      </td>`;
     tb.appendChild(tr);
   });
 }
-</script>
 
-</body>
-</html>
+/* ================= MODAL ================= */
+function openMd(g) {
+  document.getElementById('mNum').textContent = `GM ${g.num}`;
+  document.getElementById('mTit').textContent = g.assunto;
+  document.getElementById('mIni').textContent = g.inicio;
+  document.getElementById('mDur').textContent = g.duracao;
+  document.getElementById('mRtec').textContent = g.respTec;
+
+  const mw = document.getElementById('mMotW');
+  if (g.status === 'cancelada' && g.motivo !== '—') {
+    document.getElementById('mMot').textContent = g.motivo;
+    mw.style.display = 'block';
+  } else {
+    mw.style.display = 'none';
+  }
+
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeMd(e) {
+  if (e.target.id === 'overlay')
+    document.getElementById('overlay').classList.remove('open');
+}
+</script>
